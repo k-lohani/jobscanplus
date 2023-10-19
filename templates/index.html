@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JobScan Plus!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  </head>
+  <body style=" min-height: 100vh; display: flex; flex-direction: column;">
+        {% include 'navbar.html' %}
+        <section class="section mt-4" style="padding-top: 18rem;">
+            <div class="container">
+                <div class = 'columns'>
+                    <div class = "column is-5">
+                        <h1 class="title has-text-success">
+                            JobScan Plus
+                        </h1>
+                        <p class="subtitle">
+                            Pick a job description and I'll analyze it for you!
+                        </p>
+                    </div>
+                    <div class="column">
+                        <form method="POST" action = '/'>
+                            <textarea class = "textarea is-large is-success" id="job_desc" name="job_desc"></textarea><br>
+                            <input type="submit" value="Submit" class = 'button is-success'>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+  </body>
+  {% include 'footer.html' %}
+</html>

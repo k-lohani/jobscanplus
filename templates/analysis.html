@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JobScan Plus</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+    <div>
+        {% include 'navbar.html' %}
+        <section class="section">
+            <div class="container">
+                <div class="section has-text-centered content">
+                    <h1 class="title has-text-success">
+                        JS Insights
+                    </h1>
+                    <p class="subtitle">
+                        Here is the job analyzed for you!
+                    </p>
+                    <!-- Add this button to your existing HTML page
+                     <a href="{{ url_for('download_page_as_pdf', jd_desc=job_desc)}}" class="button is-primary">Download as PDF</a> -->
+                </div>
+                <h4 class = 'title is-4 has-text-success'>Job Description</h4>
+                <h6 class="subtitle is-6">Text provided on the previous page</h6>
+                <div class="content has-text-justified">
+                    <p>{{job_desc}}</p>
+                </div>
+            </div>
+        </section>
+        <div class="section">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-6">
+                        <h4 class="title is-4 has-text-success">Key points</h4>
+                        <h6 class="subtitle is-6">Key points extracted from the job description</h6><br>
+                        <table class="table is-fullwidth is-bordered is-hoverable">
+                            <thead>
+                                <th class="has-text-centered">Domain</th>
+                                <th class="has-text-centered">Desired Qualification(s)</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {% if domain %}
+                                        <td class="has-text-centered">{{domain}}</td>
+                                    {% else %}
+                                        <td class="has-text-centered has-text-info">Not Found</td>
+                                    {% endif %}
+                                    {% if quals_exp %}
+                                        <td class="has-text-centered">{{quals_exp}}</td>
+                                    {% else %}
+                                        <td class="has-text-centered has-text-info">Not Found</td>
+                                    {% endif %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column is-6" id = 'skills'>
+                        <h4 class="title is-4 has-text-success">Desired Skills</h4>
+                        <h6 class="subtitle is-6">All the skills identified from the job description</h6><br>
+                        <table class="table is-fullwidth is-bordered is-narrow is-hoverable">
+                            <tbody>
+                                {% for skill in skills %}
+                                    {% if loop.index0 is divisibleby(5) %}
+                                        <tr></tr>
+                                        <td class="has-text-centered">{{ skill}}</td>
+                                    {% else %}
+                                        <td class="has-text-centered">{{ skill }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-6" id="keyword_importance">
+                        <h4 class="title is-4 has-text-success">Important Keywords</h4>
+                        <h6 class="subtitle is-6">Top 15 keywords identified as the most important one's from the job description using Bag-of-words technique</h6>
+                        <br><table class = "table is-bordered is-fullwidth is-hoverable">
+                            <tbody>
+                                {% for index, row in important_words_df.iterrows() %}
+                                    {% if loop.index0 is divisibleby(3) %}
+                                        <tr></tr>
+                                        <td colspan="4">{{ row['feature_names'] }}</td>
+                                    {% else %}
+                                        <td>{{ row['feature_names'] }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column is-6">
+                        {{ important_words_plot|safe }}
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="section">
+            <div class="container" id = "word_frequency">
+                <h4 class="title is-4 has-text-success">Frequent Keywords</h4>
+                <h6 class="subtitle is-6">Top 10 multiple times occuring keywords</h6>
+                <div class="columns">
+                    <div class="column is-6">
+                        <br>                    
+                        <table class="table is-fullwidth is-bordered is-narrow is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th class="has-text-centered">Keywords</th>
+                                    <th class="has-text-centered">Frequency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for index, row in word_freq_scores.iterrows() %}
+                                    <tr>
+                                        <td class="has-text-centered">{{ row['keyword']}}</td>
+                                        <td class="has-text-centered">{{ row['frequency']}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column is-6">
+                        {{ word_freq_scores_plot|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-6" id="top_topics">
+                        <h4 class="title is-4 has-text-success">Relevant Topics</h4>
+                        <h6 class="subtitle is-6">Top 5 topics identified using topic modeling</h6><br>
+                        <table class="table is-fullwidth is-bordered is-narrow is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th class="has-text-centered">S.No</th>
+                                    <th class="has-text-centered">Topic(s)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for index, row in topic_df.iterrows() %}
+                                    <tr>
+                                        <td class="has-text-centered">{{ row['topic_idx'] + 1}}</td>
+                                        <td>{{ ", ".join(row['top_words'])}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column is-6" id="entity">
+                        <h4 class="title is-4 has-text-success">Identified Entities</h4>
+                        <h6 class="subtitle is-6">Entities identified using Named Entity Recognition (NER)</h6><br>
+                        <table class="table is-fullwidth is-bordered is-narrow is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th class="has-text-centered">Entity Name</th>
+                                    <th class="has-text-centered">Entity Label</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for index, row in entity_df.iterrows() %}
+                                    <tr>
+                                        <td class="has-text-centered">{{ row['Entity Name']}}</td>
+                                        <td class="has-text-centered">{{ row['Entity Label']}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+</body>
+</html>
