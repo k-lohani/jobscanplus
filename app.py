@@ -95,4 +95,4 @@ def download_page_as_pdf(jd_desc):
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3000)
+    app.run(debug=False)
